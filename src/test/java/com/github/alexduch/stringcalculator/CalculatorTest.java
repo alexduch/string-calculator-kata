@@ -52,6 +52,18 @@ class CalculatorTest {
     assertThrows(NumberFormatException.class, () -> calculator.add("1,\n12"));
   }
 
+  @Test
+  void shouldSupportCustomDelimiters() {
+    assertEquals(3, calculator.add("//;\n1;2"));
+    assertEquals(11, calculator.add("//!\n6!5"));
+  }
+
+  @Test
+  void shouldRejectInvalidCustomDelimiters() {
+    assertThrows(InvalidDelimiterException.class, () -> calculator.add("//\n1;2"));
+    assertThrows(InvalidDelimiterException.class, () -> calculator.add("//!,6!5"));
+  }
+
   private String generateInput(int max) {
     return IntStream.range(0, max)
         .collect(
