@@ -1,7 +1,9 @@
 package com.github.alexduch.stringcalculator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 class CalculatorTest {
@@ -29,9 +31,10 @@ class CalculatorTest {
   }
 
   @Test
-  void shouldRejectMoreThanTwoNumbers() {
-    assertThrows(TooManyNumbersException.class, () -> calculator.add("1,2,3"));
-    assertThrows(TooManyNumbersException.class, () -> calculator.add("1,2,3,4"));
+  void shouldAcceptAnyNumberOfNumbers() {
+    assertEquals(6, calculator.add("1,2,3"));
+    assertEquals(10, calculator.add("1,2,3,4"));
+    assertEquals(4950, calculator.add(generateInput(100)));
   }
 
   @Test
@@ -40,5 +43,15 @@ class CalculatorTest {
     assertThrows(NumberFormatException.class, () -> calculator.add("afm,zoegjo"));
     assertThrows(NumberFormatException.class, () -> calculator.add("1,zoegjo"));
     assertThrows(NumberFormatException.class, () -> calculator.add("afm,0"));
+  }
+
+  private String generateInput(int max) {
+    return IntStream.range(0, max)
+        .collect(
+            StringBuffer::new,
+            (buffer, number) -> buffer.append(number).append(","),
+            StringBuffer::append
+        )
+        .toString();
   }
 }
