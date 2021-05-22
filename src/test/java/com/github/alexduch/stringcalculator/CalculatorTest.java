@@ -1,5 +1,6 @@
 package com.github.alexduch.stringcalculator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -62,6 +63,19 @@ class CalculatorTest {
   void shouldRejectInvalidCustomDelimiters() {
     assertThrows(InvalidDelimiterException.class, () -> calculator.add("//\n1;2"));
     assertThrows(InvalidDelimiterException.class, () -> calculator.add("//!,6!5"));
+  }
+
+  @Test
+  void shouldRejectNegatives() {
+    NegativesNotAllowedException e =
+        assertThrows(NegativesNotAllowedException.class, () -> calculator.add("-1,2"));
+    assertThat(e.getNegatives()).containsExactly(-1);
+
+    e = assertThrows(NegativesNotAllowedException.class, () -> calculator.add("1,-2\n-3"));
+    assertThat(e.getNegatives()).containsExactly(-2, -3);
+
+    e = assertThrows(NegativesNotAllowedException.class, () -> calculator.add("//!\n6!-5"));
+    assertThat(e.getNegatives()).containsExactly(-5);
   }
 
   private String generateInput(int max) {
