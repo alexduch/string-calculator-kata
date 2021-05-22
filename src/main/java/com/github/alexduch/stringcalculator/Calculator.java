@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 public class Calculator {
 
   /**
-   * The method can take numbers, separated by commas, and will return their sum.
+   * The method can take numbers, separated by commas or new lines, and will return their sum.
    * For example “” or “1” or “1,2” as inputs.
    * For an empty string it will return 0
    *
@@ -21,7 +21,7 @@ public class Calculator {
     if (numbers.isEmpty()) {
       return IntStream.builder().build();
     }
-    String[] ints = numbers.split(",");
+    String[] ints = numbers.split("[,\\n]", -1);
     return Arrays.stream(ints)
         .mapToInt(Integer::parseInt);
   }

@@ -45,6 +45,13 @@ class CalculatorTest {
     assertThrows(NumberFormatException.class, () -> calculator.add("afm,0"));
   }
 
+  @Test
+  void shouldAcceptNewLineAsSeparator() {
+    assertEquals(6, calculator.add("1\n2,3"));
+    assertThrows(NumberFormatException.class, () -> calculator.add("1,\n"));
+    assertThrows(NumberFormatException.class, () -> calculator.add("1,\n12"));
+  }
+
   private String generateInput(int max) {
     return IntStream.range(0, max)
         .collect(
@@ -52,6 +59,7 @@ class CalculatorTest {
             (buffer, number) -> buffer.append(number).append(","),
             StringBuffer::append
         )
-        .toString();
+        .toString()
+        .transform(s -> s.substring(0, s.length() -1));
   }
 }
