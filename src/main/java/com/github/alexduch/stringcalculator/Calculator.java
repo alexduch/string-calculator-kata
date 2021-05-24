@@ -1,6 +1,5 @@
 package com.github.alexduch.stringcalculator;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Calculator {
@@ -20,36 +19,9 @@ public class Calculator {
    * @return the sum
    */
   public int add(String numbers) {
-    var integers = parseInput(numbers);
+    var integers = new DelimitedInputParser(DEFAULT_DELIMITERS).parse(numbers);
     throwIfContainsNegatives(integers);
     return integers.stream().mapToInt(Integer::intValue).sum();
-  }
-
-  private List<Integer> parseInput(String numbers) {
-    if (numbers.isEmpty()) {
-      return List.of();
-    }
-    DelimitedInput input = determineDelimiter(numbers);
-    String[] ints = input.numbers().split("[" + input.delimiter() + "]", -1);
-    return Arrays.stream(ints)
-        .map(Integer::parseInt)
-        .toList();
-  }
-
-  private DelimitedInput determineDelimiter(String input) {
-    if (input.startsWith("//")) {
-      int delimiterEnd = input.indexOf('\n');
-      if (delimiterEnd < 3) {
-        throw new InvalidDelimiterException();
-      }
-
-      return new DelimitedInput(
-          input.substring(2, delimiterEnd),
-          input.substring(delimiterEnd + 1)
-      );
-    } else {
-      return new DelimitedInput(DEFAULT_DELIMITERS, input);
-    }
   }
 
   private void throwIfContainsNegatives(List<Integer> numbers) {
